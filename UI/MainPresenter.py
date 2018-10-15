@@ -30,7 +30,7 @@ class MainPresenter(QMainWindow, RSAMainUI.Ui_MainWindow):
         self.about_ui.show()
 
     def initRSAUI(self):
-        # 使用全局变量
+        # 使用全局变量 方便子界面获取值
         global M
         global e
         global fn
@@ -47,10 +47,7 @@ class MainPresenter(QMainWindow, RSAMainUI.Ui_MainWindow):
         self.lineEdit_n.setText(str(n))
         self.lineEdit_fn.setText(str(fn))
         self.lineEdit_e.setText(str(e))
-        print(self.gcd(fn, e))
-        print(self.gcd(p, q))
         d = self.computeD(fn, e)
-        print(d)
         d = round(d)
         self.lineEdit_d.setText(str(d))
         self.lineEdit_M.setText(str(M))
@@ -61,27 +58,23 @@ class MainPresenter(QMainWindow, RSAMainUI.Ui_MainWindow):
 
 
     def genrandom(self):
-
+        # 随机生成p,q
         p = randint(1000, 99999)
         q = randint(1000, 99999)
         while not (self.IsPrime(p) and self.IsPrime(q)):
             p = randint(1000, 99999)
-            # print(p)
             q = randint(1000, 99999)
-            # print(q)
         return (p, q)
 
     def computeN(self, p, q):
         n = p * q
         fn = (p-1) * (q-1)
         return (n, fn)
-
+    # 判断是否为素数(因子检测法)
     def IsPrime(self, candidate):
         if ((candidate & 1) == 0):  # 是偶数，除了2，其他偶数全部不是质数
             return candidate == 2
         limit = int(math.sqrt(candidate))
-
-        # print('limint', limit)
         for i in range(3, limit + 1, 2):
             if candidate % i == 0:
                 return False
@@ -103,6 +96,7 @@ class MainPresenter(QMainWindow, RSAMainUI.Ui_MainWindow):
         x2 = 0
         y2 = 1
         while b != 0:
+            # a = b * q + r
             q = math.trunc(a / b)
             # ri = r(i-2) % r(i-1)
             r = a % b
